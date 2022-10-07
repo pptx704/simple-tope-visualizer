@@ -1,11 +1,11 @@
 module Project where
 
-import CodeWorld
-import TopeLayerData
-import SquareDrawings
+import           CodeWorld
+import           SquareDrawings
+import           TopeLayerData
 
 myPicture :: Picture
-myPicture = drawShape (Triangle TriangleLeft)
+myPicture = example1
 
 run :: IO ()
 run = drawingOf myPicture
