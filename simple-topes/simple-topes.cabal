@@ -47,7 +47,7 @@ library
   ghc-options: -Wall -fno-warn-type-defaults
   build-depends:
       array
-    , base >=4.13 && <4.15
+    , base >=4.7 && <5
     , containers
     , logict
     , mtl
@@ -81,7 +81,7 @@ test-suite spec
   ghc-options: -Wall -fno-warn-type-defaults -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       array
-    , base >=4.13 && <4.15
+    , base >=4.7 && <5
     , containers
     , logict
     , mtl
