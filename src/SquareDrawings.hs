@@ -2,14 +2,15 @@
 module SquareDrawings where
 
 import           CodeWorld
-import           TopeLayerData   (BasicShape (..))
-import           TopeEquations
 import qualified RSTT.Interpret  as Interpret
 import qualified RSTT.Syntax.Abs as RSTT
 import qualified RSTT.Tope.Proof as Prover
+import           TopeEquations
+import           TopeLayerData   (BasicShape (..))
 
+type BasicShape2D = BasicShape CodeWorld.Point
 
-basicShapes2D :: [BasicShape]
+basicShapes2D :: [BasicShape2D]
 basicShapes2D =
   [ BasicShape "t₁ ≡ 𝟬 ∧ t₂ ≡ 𝟬"    [(0, 0)]
   , BasicShape "t₁ ≡ 𝟬 ∧ t₂ ≡ 𝟭"    [(0, 1)]
@@ -25,10 +26,10 @@ basicShapes2D =
   ]
 
 magnifyPath :: [CodeWorld.Point] -> [CodeWorld.Point]
-magnifyPath [] = []
-magnifyPath ((a, b): ps) = (a*4, b*4): magnifyPath ps
+magnifyPath []           = []
+magnifyPath ((a, b): ps) = (a*4, -b*4): magnifyPath ps
 
-renderBasicShape2D :: BasicShape -> Picture
+renderBasicShape2D :: BasicShape2D -> Picture
 renderBasicShape2D (BasicShape _tope points) =
   case magnifyPath points of
     []             -> error "invalid basic shapes without points!"
@@ -37,7 +38,7 @@ renderBasicShape2D (BasicShape _tope points) =
     path@[_, _, _] -> solidPolygon path
     _              -> error "cannot render in 3D or higher dimensions"
 
-renderBasicShapes2D :: [BasicShape] -> Picture
+renderBasicShapes2D :: [BasicShape2D] -> Picture
 renderBasicShapes2D = foldMap renderBasicShape2D
 
 renderTope2D :: RSTT.Tope -> Picture
@@ -65,7 +66,7 @@ renderTope2DwithBackground color tope
 
 -- | Functions to show all equations available
 example1 :: Picture
-example1 = (renderList . convert 10) get2DEquations
+example1 = (renderRow . take 10) get2DEquations
 
 convert :: Int -> [a] -> [[a]]
 convert _ [] = []
@@ -77,4 +78,4 @@ renderRow [] = blank
 
 renderList :: [[RSTT.Tope]] -> Picture
 renderList (t:ts) = renderRow t <> translated 0 (-5) (renderList ts)
-renderList [] = blank
+renderList []     = blank
