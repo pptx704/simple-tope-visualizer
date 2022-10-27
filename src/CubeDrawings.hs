@@ -20,33 +20,34 @@ getLayerColor None   = RGBA 0 0 0 0
 
 basicShapes3D :: [BasicShape3D]
 basicShapes3D =
-  [ BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(0, 0, 0)]             Back
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1)]             Front
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(0, 1, 0)]             Back
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(0, 1, 1)]             Front
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(1, 0, 0)]             Back
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(1, 0, 1)]             Front
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(1, 1, 0)]             Back
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(1, 1, 1)]             Front
-  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟬"            [(0, 0, 0), (1, 0, 0)]  Back
-  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟬"            [(0, 1, 0), (1, 1, 0)]  Back
-  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟬"            [(0, 0, 0), (0, 1, 0)]  Back
-  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟬"            [(1, 0, 0), (1, 1, 0)]  Back
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬"            [(0, 0, 0), (0, 0, 1)]  Middle
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬"            [(1, 0, 0), (1, 0, 1)]  Middle
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭"            [(0, 1, 0), (0, 1, 1)]  Middle
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭"            [(1, 1, 0), (1, 1, 1)]  Middle
-  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟭"            [(0, 0, 1), (1, 0, 1)]  Front
-  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟭"            [(0, 1, 1), (1, 1, 1)]  Front
-  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟭"            [(0, 0, 1), (0, 1, 1)]  Front
-  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟭"            [(1, 0, 1), (1, 1, 1)]  Front
-  , BasicShape "s ≡ t ∧ u ≡ 𝟬"            [(0, 0, 0), (1, 1, 0)]  Back
-  , BasicShape "s ≡ t ∧ u ≡ 𝟭"            [(0, 0, 1), (1, 1, 1)]  Front
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ u"            [(0, 0, 0), (0, 1, 1)]  Middle
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ u"            [(1, 0, 0), (1, 1, 1)]  Middle
-  , BasicShape "s ≡ u ∧ t ≡ 𝟬"            [(0, 0, 0), (1, 0, 1)]  Middle
-  , BasicShape "s ≡ u ∧ t ≡ 𝟭"            [(0, 1, 0), (1, 1, 1)]  Middle
-  , BasicShape "s ≡ t ∧ t ≡ u"            [(0, 0, 0), (1, 1, 1)]  Middle
+  [ BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(0, 0, 0)]                       Back
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1)]                       Front
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(0, 1, 0)]                       Back
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(0, 1, 1)]                       Front
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(1, 0, 0)]                       Back
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(1, 0, 1)]                       Front
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(1, 1, 0)]                       Back
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(1, 1, 1)]                       Front
+  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟬"            [(0, 0, 0), (1, 0, 0)]            Back
+  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟬"            [(0, 1, 0), (1, 1, 0)]            Back
+  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟬"            [(0, 0, 0), (0, 1, 0)]            Back
+  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟬"            [(1, 0, 0), (1, 1, 0)]            Back
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬"            [(0, 0, 0), (0, 0, 1)]            Middle
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬"            [(1, 0, 0), (1, 0, 1)]            Middle
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭"            [(0, 1, 0), (0, 1, 1)]            Middle
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭"            [(1, 1, 0), (1, 1, 1)]            Middle
+  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟭"            [(0, 0, 1), (1, 0, 1)]            Front
+  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟭"            [(0, 1, 1), (1, 1, 1)]            Front
+  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟭"            [(0, 0, 1), (0, 1, 1)]            Front
+  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟭"            [(1, 0, 1), (1, 1, 1)]            Front
+  , BasicShape "s ≡ t ∧ u ≡ 𝟬"            [(0, 0, 0), (1, 1, 0)]            Back
+  , BasicShape "s ≡ t ∧ u ≡ 𝟭"            [(0, 0, 1), (1, 1, 1)]            Front
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ u"            [(0, 0, 0), (0, 1, 1)]            Middle
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ u"            [(1, 0, 0), (1, 1, 1)]            Middle
+  , BasicShape "s ≡ u ∧ t ≡ 𝟬"            [(0, 0, 0), (1, 0, 1)]            Middle
+  , BasicShape "s ≡ u ∧ t ≡ 𝟭"            [(0, 1, 0), (1, 1, 1)]            Middle
+  , BasicShape "s ≡ t ∧ t ≡ u"            [(0, 0, 0), (1, 1, 1)]            Middle
+  , BasicShape "s ≡ 𝟭 ∧ ≤(u, t)"          [(1, 0, 0), (1, 1, 0), (1,1,1)]   Middle
   
 
 
@@ -59,19 +60,18 @@ basicShapes3D =
   ]
 
 render3Das2D :: BasicShape3D -> Picture
-render3Das2D (BasicShape _ shape l) = case flatten3D shape of
-  [(x, y)] -> colored (getLayerColor l) $ translated x y (solidCircle 0.15)
-  [(x1, y1), (x2, y2)] ->
-    colored (getLayerColor l) $ thickPolyline 0.1 [(x1, y1), (x2, y2)]
-  _ -> error "Not implemented yet"
+render3Das2D shp@(BasicShape _ _ l) = colored col $ (renderBasicShape2D.from3D) shp
+  where
+    col = getLayerColor l
+    from3D (BasicShape t shape l) = BasicShape t (flatten3D shape) l
 
 flatten3D :: [(Double, Double, Double)] -> [(Double, Double)]
 flatten3D = map flattenPoint
   where
     flattenPoint (x, y, z) = (x',y')
       where
-        x' = 4*(x - z/2) - z/2
-        y' = 4*(-y - z/2)
+        x' = (x - z/2) - z/8 -- -z/8 is used to rotate the cube a bit for better representations
+        y' = y + z/2
 
 renderRow3D :: [BasicShape3D] -> Picture
 renderRow3D (t:ts) = render3Das2D t <> translated 5 0 (renderRow3D ts)
