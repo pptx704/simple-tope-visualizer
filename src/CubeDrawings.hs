@@ -15,9 +15,9 @@ data Layer = Front | Middle | Back
   deriving Eq
 
 getLayerColor :: Layer -> Color
-getLayerColor Front = RGBA 0.76 0.44 1 0.4
+getLayerColor Front  = RGBA 0.76 0.44 1 0.4
 getLayerColor Middle = RGBA 0.76 0.44 1 0.6
-getLayerColor Back = RGBA 0.76 0.44 1 0.8
+getLayerColor Back   = RGBA 0.76 0.44 1 0.8
 
 basicShapes3D :: [BasicShape3D]
 basicShapes3D =
@@ -42,6 +42,12 @@ basicShapes3D =
   , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟭"    [(0, 1, 1, Front), (1, 1, 1, Front)]
   , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1, Front), (0, 1, 1, Front)]
   , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟭"    [(1, 0, 1, Front), (1, 1, 1, Front)]
+  -- The idea is, every basic shape (point, line, triangle) is either on one of the faces
+  -- if not faces (i.e. line (0,0,0) -> (1,1,1)) the shapes still remain 'inside' the 3D cube
+  -- using these information, I think it is possible to produce the 3D diagram properly
+  
+  -- Another way is to use the same alpha for for shapes, but maintain which one to
+  -- render on top of another. However, I am skeptic about that implementation
   ]
 
 render3Das2D :: BasicShape3D -> Picture
@@ -62,7 +68,7 @@ flatten3D = map flattenPoint
 
 renderRow3D :: [BasicShape3D] -> Picture
 renderRow3D (t:ts) = render3Das2D t <> translated 5 0 (renderRow3D ts)
-renderRow3D [] = blank
+renderRow3D []     = blank
 
 mergeRow :: [BasicShape3D] -> Picture
 mergeRow = foldMap render3Das2D

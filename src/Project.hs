@@ -1,8 +1,8 @@
 module Project where
 
 import           CodeWorld
+import           CubeDrawings   (example3)
 import           SquareDrawings
-import CubeDrawings (example3)
 
 myPicture :: Picture
 myPicture = example3
