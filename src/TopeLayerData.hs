@@ -1,13 +1,12 @@
 module TopeLayerData where
 
-import CodeWorld
-import qualified RSTT.Syntax.Abs as RSTT
 import           Data.String     (IsString (..))
+import qualified RSTT.Syntax.Abs as RSTT
 import qualified RSTT.Syntax.Par as RSTT
 
-data BasicShape = BasicShape
+data BasicShape a = BasicShape
   { basicShapeTope   :: RSTT.Tope
-  , basicShapePoints :: [CodeWorld.Point]
+  , basicShapePoints :: [a]
   }
 
 instance IsString RSTT.Tope where
