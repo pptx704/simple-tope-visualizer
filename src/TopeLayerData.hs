@@ -7,7 +7,11 @@ import qualified RSTT.Syntax.Par as RSTT
 data BasicShape a = BasicShape
   { basicShapeTope   :: RSTT.Tope
   , basicShapePoints :: [a]
+  , basicShapeLayer  :: Layer
   }
+
+data Layer = None | Front | Middle | Back
+  deriving Eq
 
 instance IsString RSTT.Tope where
   fromString = unsafeFromRight . RSTT.pTope . RSTT.myLexer

@@ -32,6 +32,7 @@ dependencies:
 - base >= 4.7 && < 5
 - codeworld-api
 - simple-topes
+- text
 
 library:
   source-dirs: src

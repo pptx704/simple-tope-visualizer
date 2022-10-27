@@ -9,61 +9,68 @@ import           SquareDrawings
 import           TopeLayerData
 -- All symbols: ⊥ ⊤ ≤(t₁, t₂) ∧ ⊢ 𝟬 𝟭 ≡ ∨
 
-type BasicShape3D = BasicShape (Double, Double, Double, Layer)
+type BasicShape3D = BasicShape (Double, Double, Double)
 
-data Layer = Front | Middle | Back
-  deriving Eq
 
 getLayerColor :: Layer -> Color
-getLayerColor Front  = RGBA 0.76 0.44 1 0.4
-getLayerColor Middle = RGBA 0.76 0.44 1 0.6
-getLayerColor Back   = RGBA 0.76 0.44 1 0.8
+getLayerColor Front   = RGBA 0.86 0.54 0.7 0.6
+getLayerColor Back  = RGBA 0.66 0.34 0.9 0.6
+getLayerColor Middle = RGBA 0.7 0.7 0 0.6
+getLayerColor None   = RGBA 0 0 0 0
 
 basicShapes3D :: [BasicShape3D]
 basicShapes3D =
-  [ BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(0, 0, 0, Back)]
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1, Front)]
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(0, 1, 0, Back)]
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(0, 1, 1, Front)]
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(1, 0, 0, Back)]
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(1, 0, 1, Front)]
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(1, 1, 0, Back)]
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(1, 1, 1, Front)]
+  [ BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(0, 0, 0)]             Back
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1)]             Front
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(0, 1, 0)]             Back
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(0, 1, 1)]             Front
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟬"    [(1, 0, 0)]             Back
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬 ∧ u ≡ 𝟭"    [(1, 0, 1)]             Front
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟬"    [(1, 1, 0)]             Back
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭 ∧ u ≡ 𝟭"    [(1, 1, 1)]             Front
+  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟬"            [(0, 0, 0), (1, 0, 0)]  Back
+  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟬"            [(0, 1, 0), (1, 1, 0)]  Back
+  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟬"            [(0, 0, 0), (0, 1, 0)]  Back
+  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟬"            [(1, 0, 0), (1, 1, 0)]  Back
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬"            [(0, 0, 0), (0, 0, 1)]  Middle
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬"            [(1, 0, 0), (1, 0, 1)]  Middle
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭"            [(0, 1, 0), (0, 1, 1)]  Middle
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭"            [(1, 1, 0), (1, 1, 1)]  Middle
+  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟭"            [(0, 0, 1), (1, 0, 1)]  Front
+  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟭"            [(0, 1, 1), (1, 1, 1)]  Front
+  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟭"            [(0, 0, 1), (0, 1, 1)]  Front
+  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟭"            [(1, 0, 1), (1, 1, 1)]  Front
+  , BasicShape "s ≡ t ∧ u ≡ 𝟬"            [(0, 0, 0), (1, 1, 0)]  Back
+  , BasicShape "s ≡ t ∧ u ≡ 𝟭"            [(0, 0, 1), (1, 1, 1)]  Front
+  , BasicShape "s ≡ 𝟬 ∧ t ≡ u"            [(0, 0, 0), (0, 1, 1)]  Middle
+  , BasicShape "s ≡ 𝟭 ∧ t ≡ u"            [(1, 0, 0), (1, 1, 1)]  Middle
+  , BasicShape "s ≡ u ∧ t ≡ 𝟬"            [(0, 0, 0), (1, 0, 1)]  Middle
+  , BasicShape "s ≡ u ∧ t ≡ 𝟭"            [(0, 1, 0), (1, 1, 1)]  Middle
+  , BasicShape "s ≡ t ∧ t ≡ u"            [(0, 0, 0), (1, 1, 1)]  Middle
+  
 
-  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟬"    [(0, 0, 0, Back), (1, 0, 0, Back)]
-  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟬"    [(0, 1, 0, Back), (1, 1, 0, Back)]
-  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟬"    [(0, 0, 0, Back), (0, 1, 0, Back)]
-  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟬"    [(1, 0, 0, Back), (1, 1, 0, Back)]
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟬"    [(0, 0, 0, Middle), (0, 0, 1, Middle)]
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟬"    [(1, 0, 0, Middle), (1, 0, 1, Middle)]
-  , BasicShape "s ≡ 𝟬 ∧ t ≡ 𝟭"    [(0, 1, 0, Middle), (0, 1, 1, Middle)]
-  , BasicShape "s ≡ 𝟭 ∧ t ≡ 𝟭"    [(1, 1, 0, Middle), (1, 1, 1, Middle)]
-  , BasicShape "t ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1, Front), (1, 0, 1, Front)]
-  , BasicShape "t ≡ 𝟭 ∧ u ≡ 𝟭"    [(0, 1, 1, Front), (1, 1, 1, Front)]
-  , BasicShape "s ≡ 𝟬 ∧ u ≡ 𝟭"    [(0, 0, 1, Front), (0, 1, 1, Front)]
-  , BasicShape "s ≡ 𝟭 ∧ u ≡ 𝟭"    [(1, 0, 1, Front), (1, 1, 1, Front)]
+
   -- The idea is, every basic shape (point, line, triangle) is either on one of the faces
   -- if not faces (i.e. line (0,0,0) -> (1,1,1)) the shapes still remain 'inside' the 3D cube
   -- using these information, I think it is possible to produce the 3D diagram properly
-  
+
   -- Another way is to use the same alpha for for shapes, but maintain which one to
   -- render on top of another. However, I am skeptic about that implementation
   ]
 
 render3Das2D :: BasicShape3D -> Picture
-render3Das2D (BasicShape _ shape) = case flatten3D shape of
-  [(x, y, l)] -> colored (getLayerColor l) $ translated x y (solidCircle 0.15)
-  [(x1, y1, l1), (x2, y2, l2)] -> if l1 == l2 then
-    colored (getLayerColor l1) $ thickPolyline 0.1 [(x1, y1), (x2, y2)]
-    else error "Cannot have edges of different layers"
+render3Das2D (BasicShape _ shape l) = case flatten3D shape of
+  [(x, y)] -> colored (getLayerColor l) $ translated x y (solidCircle 0.15)
+  [(x1, y1), (x2, y2)] ->
+    colored (getLayerColor l) $ thickPolyline 0.1 [(x1, y1), (x2, y2)]
   _ -> error "Not implemented yet"
 
-flatten3D :: [(Double, Double, Double, Layer)] -> [(Double, Double, Layer)]
+flatten3D :: [(Double, Double, Double)] -> [(Double, Double)]
 flatten3D = map flattenPoint
   where
-    flattenPoint (x, y, z, l) = (x',y', l)
+    flattenPoint (x, y, z) = (x',y')
       where
-        x' = 4*(x - z/2)
+        x' = 4*(x - z/2) - z/2
         y' = 4*(-y - z/2)
 
 renderRow3D :: [BasicShape3D] -> Picture
