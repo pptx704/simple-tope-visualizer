@@ -7,7 +7,7 @@ import qualified RSTT.Syntax.Par as RSTT
 data BasicShape a = BasicShape
   { basicShapeTope   :: RSTT.Tope
   , basicShapePoints :: [a]
-  , basicShapeLayer  :: Layer
+  , basicShapeLayer  :: Integer
   }
 
 data Layer = None | Front | Middle | Back

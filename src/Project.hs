@@ -1,11 +1,14 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Project where
 
 import           CodeWorld
-import           CubeDrawings   (example3)
+import           CubeDrawings
 import           SquareDrawings
+import Visualize (visualize)
 
 myPicture :: Picture
-myPicture = example3
+myPicture = example1
 
 run :: IO ()
-run = drawingOf myPicture
+run = visualize "t ≡ 𝟬 ∨ u ≡ 𝟬"

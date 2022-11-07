@@ -36,6 +36,7 @@ library
       SquareDrawings
       TopeEquations
       TopeLayerData
+      Visualize
   other-modules:
       Paths_haskell_codeworld_template
   hs-source-dirs:

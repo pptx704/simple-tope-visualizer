@@ -14,17 +14,17 @@ type BasicShape2D = BasicShape CodeWorld.Point
 
 basicShapes2D :: [BasicShape2D]
 basicShapes2D =
-  [ BasicShape "t₁ ≡ 𝟬 ∧ t₂ ≡ 𝟬"    [(0, 0)] None
-  , BasicShape "t₁ ≡ 𝟬 ∧ t₂ ≡ 𝟭"    [(0, 1)] None
-  , BasicShape "t₁ ≡ 𝟭 ∧ t₂ ≡ 𝟬"    [(1, 0)] None
-  , BasicShape "t₁ ≡ 𝟭 ∧ t₂ ≡ 𝟭"    [(1, 1)] None
-  , BasicShape "t₁ ≡ 𝟭 ∧ ≤(t₂, 𝟭)"  [(1, 0), (1, 1)] None
-  , BasicShape "t₁ ≡ 𝟬 ∧ ≤(t₂, 𝟭)"  [(0, 0), (0, 1)] None
-  , BasicShape "≤(t₁, 𝟭) ∧ t₂ ≡ 𝟬"  [(0, 0), (1, 0)] None
-  , BasicShape "≤(t₁, 𝟭) ∧ t₂ ≡ 𝟭"  [(0, 1), (1, 1)] None
-  , BasicShape "t₁ ≡ t₂"            [(0, 0), (1, 1)] None
-  , BasicShape "≤(t₂, t₁)"          [(0, 0), (1, 0), (1, 1)] None
-  , BasicShape "≤(t₁, t₂)"          [(0, 0), (0, 1), (1, 1)] None
+  [ BasicShape "t₁ ≡ 𝟬 ∧ t₂ ≡ 𝟬"    [(0, 0)]                        0
+  , BasicShape "t₁ ≡ 𝟬 ∧ t₂ ≡ 𝟭"    [(0, 1)]                        0
+  , BasicShape "t₁ ≡ 𝟭 ∧ t₂ ≡ 𝟬"    [(1, 0)]                        0
+  , BasicShape "t₁ ≡ 𝟭 ∧ t₂ ≡ 𝟭"    [(1, 1)]                        0
+  , BasicShape "t₁ ≡ 𝟭 ∧ ≤(t₂, 𝟭)"  [(1, 0), (1, 1)]                0
+  , BasicShape "t₁ ≡ 𝟬 ∧ ≤(t₂, 𝟭)"  [(0, 0), (0, 1)]                0
+  , BasicShape "≤(t₁, 𝟭) ∧ t₂ ≡ 𝟬"  [(0, 0), (1, 0)]                0
+  , BasicShape "≤(t₁, 𝟭) ∧ t₂ ≡ 𝟭"  [(0, 1), (1, 1)]                0
+  , BasicShape "t₁ ≡ t₂"            [(0, 0), (1, 1)]                0
+  , BasicShape "≤(t₂, t₁)"          [(0, 0), (1, 0), (1, 1)]        0
+  , BasicShape "≤(t₁, t₂)"          [(0, 0), (0, 1), (1, 1)]        0
   ]
 
 magnifyPath :: [CodeWorld.Point] -> [CodeWorld.Point]
@@ -43,8 +43,8 @@ renderBasicShape2D (BasicShape _tope points _) =
 renderBasicShapes2D :: [BasicShape2D] -> Picture
 renderBasicShapes2D = foldMap renderBasicShape2D
 
-renderTope2D :: RSTT.Tope -> Picture
-renderTope2D tope = renderBasicShapes2D (filter isIncluded basicShapes2D)
+renderTope :: RSTT.Tope -> [BasicShape a] -> ([BasicShape a] -> Picture) -> Picture
+renderTope tope shapes renderer = renderer (filter isIncluded shapes)
   where
     maxDepth = 20
     k = 1 -- depth of each DFS iteration
@@ -57,23 +57,22 @@ renderTope2D tope = renderBasicShapes2D (filter isIncluded basicShapes2D)
         sequent = Interpret.convertSequent
           (RSTT.Sequent RSTT.CubeContextEmpty (RSTT.TopeContextNonEmpty [tope']) tope)
 
-background :: Picture
-background = colored (light grey) (renderTope2D "⊤")
+renderTope2D :: RSTT.Tope -> Picture
+renderTope2D tope = renderTope tope basicShapes2D renderBasicShapes2D
+
+background2D :: Picture
+background2D = colored (light grey) (renderTope2D "⊤")
 
 
 renderTope2DwithBackground :: Color -> RSTT.Tope -> Picture
 renderTope2DwithBackground color tope
-  = colored color (renderTope2D tope) <> background
+  = colored color (renderTope2D tope) <> background2D
 
 
 -- | Functions to show all equations available
 example1 :: Picture
-example1 = (renderRow . take 10) get2DEquations
+example1 = (renderRow ) get2DEquations
 
-example2 :: Picture
-example2 = renderTope2DwithBackground red tope' <> translated 0 (-5) (lettering $ getTopeText tope')
-  where
-    tope' = get2DEquations !! 5
 
 getTopeText :: RSTT.Tope -> Text.Text
 getTopeText = Text.pack . ppTope . Interpret.convertTope
