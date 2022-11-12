@@ -44,7 +44,8 @@ renderBasicShape2D (BasicShape _tope points) =
     [(x, y)]          -> translated x y (solidCircle 0.15)
     path@[_, _]       -> thickPolyline 0.1 path
     path@[_, _, _]    -> solidPolygon path
-    path@[_, _, _, _] -> foldMap  solidPolygon $ combinations 3 path
+    path@[_, _, _, _] -> blank -- Keeping blank because other triangles and points do their work
+    --foldMap  solidPolygon $ combinations 3 path
     _                 -> error "cannot render in 3D or higher dimensions"
 
 renderBasicShapes2D :: [BasicShape2D] -> Picture
@@ -67,7 +68,7 @@ filterShapes tope = filter isIncluded
 
 renderTope :: RSTT.Tope -> [BasicShape a] -> ([BasicShape a] -> Picture) -> Picture
 renderTope tope shapes renderer = renderer (filterShapes tope shapes)
-    <> (translated 0 (8.5) . lettering) (T.pack $ (ppTope . convertTope) tope)
+    <> (translated 0 8.5 . scaled 0.6 0.6 . lettering) (T.pack $ (ppTope . convertTope) tope)
 
 renderTope2D :: RSTT.Tope -> Picture
 renderTope2D tope = renderTope tope basicShapes2D renderBasicShapes2D

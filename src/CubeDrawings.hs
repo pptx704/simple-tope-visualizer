@@ -59,15 +59,12 @@ basicShapes3D =
   , BasicShape "t ≡ u ∧ ≤(s, t)"          [(0, 0, 0), (0, 1, 1), (1, 1, 1)] -- 15
   , BasicShape "s ≡ t ∧ ≤(t, u)"          [(0, 0, 0), (0, 0, 1), (1, 1, 1)] -- 16
   , BasicShape "s ≡ t ∧ ≤(u, t)"          [(0, 0, 0), (1, 1, 0), (1, 1, 1)] -- 17
-  , BasicShape "≤(u, t) ∧ ≤(s, u)"         [(0, 0, 0), (0, 1, 0), (0, 1, 1), (1, 1 ,1)]-- Triangle 0, 9, 12, 15
-  -- Triangle 3, 10, 13, 14
-  -- Triangle 4, 8, 13, 16
-  -- Triangle 7, 11, 12, 17
-  -- Triangle 2, 6, 14, 17
-  -- Triangle 1, 5, 15, 16
-  -- I don't know how to add the volumes. Can only add surface in equations
-  -- Notes on shapes: It breaks for AND condition and 2 variables having specific value
-  -- The problem with 0 and 1 rule still persists
+  , BasicShape "≤(u, t) ∧ ≤(s, u)"        [(0, 0, 0), (0, 1, 0), (0, 1, 1), (1, 1 ,1)] -- Triangle 0, 9, 12, 15
+  , BasicShape "≤(u, s) ∧ ≤(t, u)"        [(0, 0, 0), (1, 0, 1), (1, 0, 0), (1, 1 ,1)] -- Triangle 3, 10, 13, 14
+  , BasicShape "≤(s, u) ∧ ≤(t, s)"        [(0, 0, 0), (0, 0, 1), (1, 0, 1), (1, 1 ,1)] -- Triangle 4, 8, 13, 16
+  , BasicShape "≤(s, t) ∧ ≤(u, s)"        [(0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 1 ,1)] -- Triangle 7, 11, 12, 17
+  , BasicShape "≤(s, t) ∧ ≤(t, u)"        [(0, 0, 0), (1, 0, 0), (1, 1, 0), (1, 1 ,1)] -- Triangle 2, 6, 14, 17
+  , BasicShape "≤(u, t) ∧ ≤(t, s)"        [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1 ,1)] -- Triangle 1, 5, 15, 16
   ]
 
 

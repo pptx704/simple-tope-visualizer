@@ -17,7 +17,7 @@ import           Control.Monad.Fail   (MonadFail)
 #endif
 import           Control.Monad.Logic
 import           Control.Monad.Reader
-import           Data.List            (inits, intercalate, tails, nub)
+import           Data.List            (inits, intercalate, nub, tails)
 import           Data.Void
 
 import           RSTT.Cube
@@ -326,17 +326,17 @@ lemLEQ = do
 
 zeroLEQ :: Rules
 zeroLEQ = do
-  TopeCon (Label "≤") [PointCon "0" [], _] <- asks sequentTope
+  TopeCon (Label "≤") [PointCon "𝟬" [], _] <- asks sequentTope
   pure ("≤R(zero)", [])
 
 oneLEQ :: Rules
 oneLEQ = do
-  TopeCon (Label "≤") [_, PointCon "1" []] <- asks sequentTope
+  TopeCon (Label "≤") [_, PointCon "𝟭" []] <- asks sequentTope
   pure ("≤R(one)", [])
 
 distinctLEQ :: Rules
 distinctLEQ = do
-  (TopeEQ (PointCon "0" []) (PointCon "1" []), _) <- asks sequentTopeContext >>= selectOne
+  (TopeEQ (PointCon "𝟬" []) (PointCon "𝟭" []), _) <- asks sequentTopeContext >>= selectOne
   pure ("≤L(distinct)", [])
 
 -- ** Helpers

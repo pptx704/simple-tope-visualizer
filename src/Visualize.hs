@@ -41,7 +41,8 @@ applyRotation :: (Double, Double) -> [BasicShape3D] -> [BasicShape3D]
 applyRotation (x, y) = applyRotationX x . applyRotationY y
 
 drawWorld :: State -> Picture
-drawWorld (State t s a) = translated (-10) 0 $ renderTope t (applyRotation a s) renderBasicShapes3D <> (background3D' . take 27) (applyRotation a basicShapes3D)
+drawWorld (State t s a) = translated (-10) 0 $ renderTope t (applyRotation a s) renderBasicShapes3D
+    <> (background3D' . take 27) (applyRotation a basicShapes3D)
 
 visualize :: RSTT.Tope -> IO()
 visualize t = activityOf (State t (filterShapes t basicShapes3D) (0, 0)) updateWorld drawWorld
