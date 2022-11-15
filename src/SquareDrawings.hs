@@ -44,27 +44,30 @@ renderBasicShape2D (BasicShape _tope points) =
     [(x, y)]          -> translated x y (solidCircle 0.15)
     path@[_, _]       -> thickPolyline 0.1 path
     path@[_, _, _]    -> solidPolygon path
-    path@[_, _, _, _] -> blank -- Keeping blank because other triangles and points do their work
-    --foldMap  solidPolygon $ combinations 3 path
+    -- for tetrahedrons, picture is not needed since the triangles will form it
+    -- However, something needs to be done to show the topes on side panel
+    path@[_, _, _, _] -> blank
     _                 -> error "cannot render in 3D or higher dimensions"
 
 renderBasicShapes2D :: [BasicShape2D] -> Picture
 renderBasicShapes2D = foldMap renderBasicShape2D
 
 filterShapes :: RSTT.Tope -> [BasicShape a] -> [BasicShape a]
-filterShapes tope = filter isIncluded
-  where
-    maxDepth = 20
-    k = 1 -- depth of each DFS iteration
-    rules = Prover.fromDefinedRules Prover.rulesLJE <> Prover.rulesLEQ
-    isIncluded (BasicShape tope' _) =
-      case Prover.proveWithBFSviaDFS' maxDepth k rules sequent of
-        Nothing     -> False
-        Just _proof -> True
-      where
-        sequent = Interpret.convertSequent
-          (RSTT.Sequent RSTT.CubeContextEmpty (RSTT.TopeContextNonEmpty [tope']) tope)
+filterShapes tope = filter isIncluded'
+    where
+        isIncluded' (BasicShape tope' _) = isIncluded tope tope'
 
+isIncluded :: RSTT.Tope -> RSTT.Tope -> Bool
+isIncluded tope tope' =
+    case Prover.proveWithBFSviaDFS' maxDepth k rules sequent of
+      Nothing -> False
+      Just _  -> True
+     where
+      sequent = Interpret.convertSequent
+          (RSTT.Sequent RSTT.CubeContextEmpty (RSTT.TopeContextNonEmpty [tope']) tope)
+      maxDepth = 20
+      k = 1
+      rules = Prover.fromDefinedRules Prover.rulesLJE <> Prover.rulesLEQ
 
 renderTope :: RSTT.Tope -> [BasicShape a] -> ([BasicShape a] -> Picture) -> Picture
 renderTope tope shapes renderer = renderer (filterShapes tope shapes)
