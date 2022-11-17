@@ -6,7 +6,7 @@ module Visualize where
 
 import           CodeWorld
 import           CubeDrawings
-import qualified Data.Text       as Text
+import qualified Data.Text       as T
 import qualified RSTT.Syntax.Abs as RSTT
 import           SquareDrawings
 import           TopeLayerData
@@ -36,7 +36,7 @@ updateWorld (KeyPress k) state@(State t s (x, y) n) = case k of
                else t
         addedTope = basicShapeTope ((drop 27 basicShapes3D) !! n)
         s' = filterShapes t' basicShapes3D
-updateWorld (PointerPress (x, y)) s = trace (Text.pack (show x ++ " " ++ show y)) $ s
+updateWorld (PointerPress (x, y)) s = trace (T.pack (show x ++ " " ++ show y)) $ s
 updateWorld _ s = s
 
 applyRotationX :: Double -> [BasicShape3D] -> [BasicShape3D]
@@ -55,8 +55,9 @@ applyRotation :: (Double, Double) -> [BasicShape3D] -> [BasicShape3D]
 applyRotation (x, y) = applyRotationX x . applyRotationY y
 
 drawWorld :: State -> Picture
-drawWorld (State t s a n) = translated (-10) 0 $ renderTope t (applyRotation a s) renderBasicShapes3D
+drawWorld (State t s a n) = translated (-10) 0 $ renderBasicShapes3D (applyRotation a s)
     <> (background3D' . take 27) (applyRotation a basicShapes3D)
+    <> (translated 0 8.5 . scaled 0.6 0.6 . lettering) (getTopeText t)
     <> translated 10 6 (sidePanel a n)
 
 sidePanel :: (Double, Double) -> Int -> Picture

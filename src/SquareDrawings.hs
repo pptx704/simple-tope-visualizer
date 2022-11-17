@@ -4,8 +4,6 @@ module SquareDrawings where
 import           CodeWorld
 import           Data.List
 import qualified Data.Text       as Text
-import qualified Data.Text       as T
-import           RSTT.Interpret  (convertTope)
 import qualified RSTT.Interpret  as Interpret
 import qualified RSTT.Syntax.Abs as RSTT
 import           RSTT.Tope       (ppTope)
@@ -46,7 +44,8 @@ renderBasicShape2D (BasicShape _tope points) =
     path@[_, _, _]    -> solidPolygon path
     -- for tetrahedrons, picture is not needed since the triangles will form it
     -- However, something needs to be done to show the topes on side panel
-    path@[_, _, _, _] -> blank
+    path@[_, _, _, _] -> foldMap solidPolygon $ combinations 3 path
+    -- path@[_, _, _, _] -> blank
     _                 -> error "cannot render in 3D or higher dimensions"
 
 renderBasicShapes2D :: [BasicShape2D] -> Picture
@@ -71,7 +70,6 @@ isIncluded tope tope' =
 
 renderTope :: RSTT.Tope -> [BasicShape a] -> ([BasicShape a] -> Picture) -> Picture
 renderTope tope shapes renderer = renderer (filterShapes tope shapes)
-    <> (translated 0 8.5 . scaled 0.6 0.6 . lettering) (T.pack $ (ppTope . convertTope) tope)
 
 renderTope2D :: RSTT.Tope -> Picture
 renderTope2D tope = renderTope tope basicShapes2D renderBasicShapes2D
