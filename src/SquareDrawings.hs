@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module SquareDrawings where
 
+import Debug.Trace
 import           CodeWorld
 import           Data.List
 import qualified Data.Text       as Text
@@ -28,9 +30,6 @@ basicShapes2D =
   , BasicShape "≤(t₁, t₂)"          [(0, 0), (0, 1), (1, 1)]
   ]
 
-combinations :: Int -> [a] -> [[a]]
-combinations k ns = filter((k==).length) $ subsequences ns
-
 positionPoint :: [CodeWorld.Point] -> [CodeWorld.Point]
 positionPoint []           = []
 positionPoint ((a, b): ps) = (a*4, -b*4): positionPoint ps
@@ -44,7 +43,7 @@ renderBasicShape2D (BasicShape _tope points) =
     path@[_, _, _]    -> solidPolygon path
     -- for tetrahedrons, picture is not needed since the triangles will form it
     -- However, something needs to be done to show the topes on side panel
-    path@[_, _, _, _] -> foldMap solidPolygon $ combinations 3 path
+    [a, b, c, d]      -> foldMap solidPolygon (traceShowId [[b,c,d], [a,c,d], [a,b,d], [a,b,c]])
     -- path@[_, _, _, _] -> blank
     _                 -> error "cannot render in 3D or higher dimensions"
 
@@ -54,10 +53,10 @@ renderBasicShapes2D = foldMap renderBasicShape2D
 filterShapes :: RSTT.Tope -> [BasicShape a] -> [BasicShape a]
 filterShapes tope = filter isIncluded'
     where
-        isIncluded' (BasicShape tope' _) = isIncluded tope tope'
+        isIncluded' (BasicShape tope' _) = tope `includes` tope'
 
-isIncluded :: RSTT.Tope -> RSTT.Tope -> Bool
-isIncluded tope tope' =
+includes :: RSTT.Tope -> RSTT.Tope -> Bool
+tope `includes` tope' =
     case Prover.proveWithBFSviaDFS' maxDepth k rules sequent of
       Nothing -> False
       Just _  -> True

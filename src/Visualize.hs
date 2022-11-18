@@ -4,6 +4,7 @@
 -- however, layers are unchanged. This should be fixed.
 module Visualize where
 
+import Data.List ((\\))
 import           CodeWorld
 import           CubeDrawings
 import qualified Data.Text       as T
@@ -11,65 +12,143 @@ import qualified RSTT.Syntax.Abs as RSTT
 import           SquareDrawings
 import           TopeLayerData
 
-data State = State {
-      tope          :: RSTT.Tope
-    , fShapes       :: [BasicShape3D]
-    , rotation      :: (Double, Double)
-    , squarePointer :: Int
-}
+data Rotation = Rotation
+  { aroundX :: Double
+  , aroundY :: Double
+  }
+
+zeroRotation :: Rotation
+zeroRotation = Rotation 0 0
+
+addRotation :: Rotation -> Rotation -> Rotation
+addRotation (Rotation x1 y1) (Rotation x2 y2) = Rotation (x1 + x2) (y1 + y2)
+
+data State = State
+  { currentTope             :: (RSTT.Tope, [BasicShape3D])
+  , currentRotation         :: Rotation
+  , squarePointer           :: Int
+  }
+
+prepareTope :: RSTT.Tope -> (RSTT.Tope, [BasicShape3D])
+prepareTope tope = (tope, filterShapes tope basicShapes3D)
+
+switchBasicShape :: BasicShape3D -> RSTT.Tope -> RSTT.Tope
+switchBasicShape shape tope
+  | tope `includes` shapeTope = removeTope shapeTope tope
+  | otherwise = RSTT.TopeOr tope shapeTope
+  where
+    shapeTope = basicShapeTope shape
+
+removeTopeUnsafe :: RSTT.Tope -> RSTT.Tope -> RSTT.Tope
+removeTopeUnsafe shapeTope tope
+  | shapeTope == tope = RSTT.TopeBottom
+removeTopeUnsafe shapeTope (RSTT.TopeOr l r) =
+  case (l', r') of
+    (RSTT.TopeBottom, _) -> r'
+    (_, RSTT.TopeBottom) -> l'
+    _ -> RSTT.TopeOr l' r'
+  where
+    l' = removeTopeUnsafe shapeTope l
+    r' = removeTopeUnsafe shapeTope r
+removeTopeUnsafe _ tope = tope
+
+decompose3D :: RSTT.Tope -> [RSTT.Tope]
+decompose3D tope = map basicShapeTope (filterShapes tope basicShapes3D)
+
+topeOr :: [RSTT.Tope] -> RSTT.Tope
+topeOr [] = RSTT.TopeBottom
+topeOr [tope] = tope
+topeOr (tope:topes) = RSTT.TopeOr tope (topeOr topes)
+
+removeTopeSafe3D :: RSTT.Tope -> RSTT.Tope -> RSTT.Tope
+removeTopeSafe3D shapeTope tope = topeOr (topeComponents \\ shapeTopeComponents)
+  where
+    shapeTopeComponents = decompose3D shapeTope
+    topeComponents = decompose3D tope
+
+removeTope :: RSTT.Tope -> RSTT.Tope -> RSTT.Tope
+removeTope shapeTope tope
+  | tope' `includes` shapeTope = removeTopeSafe3D shapeTope tope
+  | otherwise = tope'
+  where
+    tope' = removeTopeUnsafe shapeTope tope
+
+rotateState :: Rotation -> State -> State
+rotateState delta state = state
+  { currentRotation = currentRotation state `addRotation` delta }
 
 updateWorld :: Event -> State -> State
-updateWorld (KeyPress k) state@(State t s (x, y) n) = case k of
-    "Up"    -> State t s (x + pi/8, y) n
-    "Down"  -> State t s (x - pi/8, y) n
-    "Left"  -> State t s (x, y - pi/8) n
-    "Right" -> State t s (x, y + pi/8) n
-    "W"     -> State t s (x, y) (max 0 (n-6))
-    "S"     -> State t s (x, y) (min 23 (n+6))
-    "D"     -> State t s (x, y) (min 23 (n+1))
-    "A"     -> State t s (x, y) (max 0 (n-1))
-    " "     -> State t' s' (x, y) n
-    _       -> state
-    where
-        t' = if not $ isIncluded t addedTope
-               then RSTT.TopeOr t addedTope
-               else t
-        addedTope = basicShapeTope ((drop 27 basicShapes3D) !! n)
-        s' = filterShapes t' basicShapes3D
+updateWorld (KeyPress key) state = case key of
+  -- rotate 3D render
+  "Up"    -> rotateState (Rotation  (pi/8) 0) state
+  "Down"  -> rotateState (Rotation (-pi/8) 0) state
+  "Left"  -> rotateState (Rotation 0  (pi/8)) state
+  "Right" -> rotateState (Rotation 0 (-pi/8)) state
+
+  -- rotate 3D render
+  "W"     -> state { squarePointer = max  0 (n - 6) } -- FIXME: magic constants
+  "S"     -> state { squarePointer = min 23 (n + 6) } -- FIXME: magic constants
+  "D"     -> state { squarePointer = min 23 (n + 1) } -- FIXME: magic constants
+  "A"     -> state { squarePointer = max  0 (n - 1) } -- FIXME: magic constants
+
+  -- add basic shape
+  -- TODO: remove
+  " "     -> state { currentTope = prepareTope (switchBasicShape currentBasicShape tope) }
+
+  _       -> state
+  where
+    n = squarePointer state
+    currentBasicShape = drop 27 basicShapes3D !! n
+    (tope, _) = currentTope state
+
 updateWorld (PointerPress (x, y)) s = trace (T.pack (show x ++ " " ++ show y)) $ s
 updateWorld _ s = s
 
 applyRotationX :: Double -> [BasicShape3D] -> [BasicShape3D]
 applyRotationX ang = map rotate
     where
-        rotate (BasicShape t p) = BasicShape t (map rotateX p)
+        rotate (BasicShape t p) = BasicShape t (map (uncenter3D . rotateX . center3D) p)
         rotateX (x, y, z) = (x, (cos ang * y) - (sin ang * z), (sin ang * y) + (cos ang * z))
 
 applyRotationY :: Double -> [BasicShape3D] -> [BasicShape3D]
 applyRotationY ang = map rotate
     where
-        rotate (BasicShape t p) = BasicShape t (map rotateY p)
+        rotate (BasicShape t p) = BasicShape t (map (uncenter3D . rotateY . center3D) p)
         rotateY (x, y, z) = ((cos ang * x) + (sin ang * z), y, (cos ang * z) - (sin ang * x))
 
-applyRotation :: (Double, Double) -> [BasicShape3D] -> [BasicShape3D]
-applyRotation (x, y) = applyRotationX x . applyRotationY y
+applyRotation :: Rotation -> [BasicShape3D] -> [BasicShape3D]
+applyRotation (Rotation x y) = applyRotationX x . applyRotationY y
 
 drawWorld :: State -> Picture
-drawWorld (State t s a n) = translated (-10) 0 $ renderBasicShapes3D (applyRotation a s)
-    <> (background3D' . take 27) (applyRotation a basicShapes3D)
-    <> (translated 0 8.5 . scaled 0.6 0.6 . lettering) (getTopeText t)
-    <> translated 10 6 (sidePanel a n)
+drawWorld (State (tope, topeComponents) rotation currentIndex) = translated (-10) 0 $ pictures
+  [ renderBasicShapes3D (applyRotation rotation topeComponents)
+  , background3D' pointsAndEdges
+  , translated 0 8.5 (scaled 0.6 0.6 (lettering (getTopeText tope)))
+  , translated 10 6 (sidePanel rotation currentIndex)
+  ]
+  where
+    rotatedBasicShapes3D = applyRotation rotation basicShapes3D
+    (pointsAndEdges, _facesAndVolumes) = splitAt 27 rotatedBasicShapes3D
 
-sidePanel :: (Double, Double) -> Int -> Picture
-sidePanel a n = (drawList (n `div` 6) . convert 6 . drop 27 . applyRotation a) basicShapes3D
-    where
-        drawList _ []     = blank
-        drawList 0 (i:is) = drawRow (n `mod` 6) i <> translated 0 (-3) (drawList (-1) is)
-        drawList n' (i:is) = drawRow (-1) i <> translated 0 (-3) (drawList (n' - 1) is)
-        drawRow _ []     = blank
-        drawRow 0 (i:is) = scaled 0.35 0.35 ((render3Das2D i <> bg) <> colored (RGBA 0 0 1 0.3) (solidRectangle 1 1)) <> translated 3 0 (drawRow (-1) is)
-        drawRow n' (i:is) = scaled 0.35 0.35 (render3Das2D i <> bg) <> translated 3 0 (drawRow (n'-1) is)
-        bg = background3D' $ (applyRotation a .take 27) basicShapes3D
+sidePanel :: Rotation -> Int -> Picture
+sidePanel rotation n = pictures
+  [ translated x (-y) (scaled 0.35 0.35 (render3Das2D shape <> background))
+    <> if i == n then selectionBox else blank
+  | (i, shape) <- zip [0..] facesAndVolumes
+  , let column = i `mod` rowSize
+  , let row    = i `div` rowSize
+  , let x = cellSize * fromIntegral column 
+  , let y = cellSize * fromIntegral row
+  -- FIXME: remove after debugging , row > 2
+  ]
+  where
+    -- FIXME: partition by dimension instead of splitAt 27
+    selectionBox = colored red (rectangle cellSize cellSize)
+    rotatedBasicShapes3D = applyRotation rotation basicShapes3D
+    (pointsAndEdges, facesAndVolumes) = splitAt 27 rotatedBasicShapes3D
+    background = background3D' pointsAndEdges
+    rowSize = 6
+    cellSize = 3
 
-visualize :: RSTT.Tope -> IO()
-visualize t = activityOf (State t (filterShapes t basicShapes3D) (0, 0) 0) updateWorld drawWorld
+visualize :: RSTT.Tope -> IO ()
+visualize t = activityOf (State (prepareTope t) zeroRotation 0) updateWorld drawWorld

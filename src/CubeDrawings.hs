@@ -72,7 +72,7 @@ render3Das2D :: BasicShape3D -> Picture
 render3Das2D shp@(BasicShape _ _) = (colored col . renderBasicShape2D . from3D) shp
   where
     col = RGBA 1 0 0 0.3
-    from3D (BasicShape t shape) = BasicShape t (flatten3D shape)
+    from3D (BasicShape t shape) = BasicShape t (flatten3D (map center3D shape))
 
 renderBasicShapes3D :: [BasicShape3D] -> Picture
 renderBasicShapes3D = foldMap render3Das2D
@@ -90,6 +90,12 @@ flatten3D = map flattenPoint
       where
         x' = x - z/2 -- -z/8 is used to rotate the cube a bit for better representations
         y' = y + z/2
+
+center3D :: (Double, Double, Double) -> (Double, Double, Double)
+center3D (x, y, z) = (x - 0.5, y - 0.5, z - 0.5)
+
+uncenter3D :: (Double, Double, Double) -> (Double, Double, Double)
+uncenter3D (x, y, z) = (x + 0.5, y + 0.5, z + 0.5)
 
 background3D' :: [BasicShape3D] -> Picture
 background3D' shapes = colored black $ renderBasicShapes3D shapes
