@@ -74,6 +74,7 @@ render3Das2D shp@(BasicShape _ _) = (colored col . renderBasicShape2D . from3D) 
     col = RGBA 1 0 0 0.3
     from3D (BasicShape t shape) = BasicShape t (flatten3D (map center3D shape))
 
+
 renderBasicShapes3D :: [BasicShape3D] -> Picture
 renderBasicShapes3D = foldMap render3Das2D
 
@@ -88,7 +89,7 @@ flatten3D = map flattenPoint
   where
     flattenPoint (x, y, z) = (x',y')
       where
-        x' = x - z/2 -- -z/8 is used to rotate the cube a bit for better representations
+        x' = x - z/2
         y' = y + z/2
 
 center3D :: (Double, Double, Double) -> (Double, Double, Double)
@@ -96,6 +97,24 @@ center3D (x, y, z) = (x - 0.5, y - 0.5, z - 0.5)
 
 uncenter3D :: (Double, Double, Double) -> (Double, Double, Double)
 uncenter3D (x, y, z) = (x + 0.5, y + 0.5, z + 0.5)
+
+
+splitByDimension' :: [BasicShape3D] -> ([BasicShape3D], [BasicShape3D]) -> ([BasicShape3D], [BasicShape3D])
+splitByDimension' [] currentSplit = currentSplit
+splitByDimension' (shape:shapes) (splitPE, splitFV) = case shape of
+  -- PE: points and edges
+  -- FV: Faces and volumes
+  BasicShape _ [_]          -> splitByDimension' shapes (addToPE shape)
+  BasicShape _ [_, _]       -> splitByDimension' shapes (addToPE shape)
+  BasicShape _ [_, _, _]    -> splitByDimension' shapes (addToFV shape)
+  BasicShape _ [_, _, _, _] -> splitByDimension' shapes (addToFV shape)
+  BasicShape _ _            -> error "Invalid BasicShape3D"
+  where
+    addToPE addedShape = (splitPE ++ [addedShape], splitFV)
+    addToFV addedShape = (splitPE, splitFV ++ [addedShape])
+
+splitByDimension :: [BasicShape3D] -> ([BasicShape3D], [BasicShape3D])
+splitByDimension shapes = splitByDimension' shapes ([], [])
 
 background3D' :: [BasicShape3D] -> Picture
 background3D' shapes = colored black $ renderBasicShapes3D shapes

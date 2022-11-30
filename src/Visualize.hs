@@ -4,9 +4,9 @@
 -- however, layers are unchanged. This should be fixed.
 module Visualize where
 
-import Data.List ((\\))
 import           CodeWorld
 import           CubeDrawings
+import           Data.List       ((\\))
 import qualified Data.Text       as T
 import qualified RSTT.Syntax.Abs as RSTT
 import           SquareDrawings
@@ -24,9 +24,9 @@ addRotation :: Rotation -> Rotation -> Rotation
 addRotation (Rotation x1 y1) (Rotation x2 y2) = Rotation (x1 + x2) (y1 + y2)
 
 data State = State
-  { currentTope             :: (RSTT.Tope, [BasicShape3D])
-  , currentRotation         :: Rotation
-  , squarePointer           :: Int
+  { currentTope     :: (RSTT.Tope, [BasicShape3D])
+  , currentRotation :: Rotation
+  , squarePointer   :: Int
   }
 
 prepareTope :: RSTT.Tope -> (RSTT.Tope, [BasicShape3D])
@@ -46,7 +46,7 @@ removeTopeUnsafe shapeTope (RSTT.TopeOr l r) =
   case (l', r') of
     (RSTT.TopeBottom, _) -> r'
     (_, RSTT.TopeBottom) -> l'
-    _ -> RSTT.TopeOr l' r'
+    _                    -> RSTT.TopeOr l' r'
   where
     l' = removeTopeUnsafe shapeTope l
     r' = removeTopeUnsafe shapeTope r
@@ -56,8 +56,8 @@ decompose3D :: RSTT.Tope -> [RSTT.Tope]
 decompose3D tope = map basicShapeTope (filterShapes tope basicShapes3D)
 
 topeOr :: [RSTT.Tope] -> RSTT.Tope
-topeOr [] = RSTT.TopeBottom
-topeOr [tope] = tope
+topeOr []           = RSTT.TopeBottom
+topeOr [tope]       = tope
 topeOr (tope:topes) = RSTT.TopeOr tope (topeOr topes)
 
 removeTopeSafe3D :: RSTT.Tope -> RSTT.Tope -> RSTT.Tope
@@ -80,28 +80,29 @@ rotateState delta state = state
 updateWorld :: Event -> State -> State
 updateWorld (KeyPress key) state = case key of
   -- rotate 3D render
-  "Up"    -> rotateState (Rotation  (pi/8) 0) state
-  "Down"  -> rotateState (Rotation (-pi/8) 0) state
-  "Left"  -> rotateState (Rotation 0  (pi/8)) state
-  "Right" -> rotateState (Rotation 0 (-pi/8)) state
+  "Up"    -> rotateState (Rotation rotationCoeff 0) state
+  "Down"  -> rotateState (Rotation (-rotationCoeff) 0) state
+  "Left"  -> rotateState (Rotation 0  (rotationCoeff)) state
+  "Right" -> rotateState (Rotation 0 (-rotationCoeff)) state
 
   -- rotate 3D render
-  "W"     -> state { squarePointer = max  0 (n - 6) } -- FIXME: magic constants
-  "S"     -> state { squarePointer = min 23 (n + 6) } -- FIXME: magic constants
-  "D"     -> state { squarePointer = min 23 (n + 1) } -- FIXME: magic constants
-  "A"     -> state { squarePointer = max  0 (n - 1) } -- FIXME: magic constants
+  "W"     -> state { squarePointer = max  0 (n - columnCount) }
+  "S"     -> state { squarePointer = min facesAndVolumsCount (n + columnCount) }
+  "D"     -> state { squarePointer = min facesAndVolumsCount (n + 1) }
+  "A"     -> state { squarePointer = max  0 (n - 1) }
 
   -- add basic shape
-  -- TODO: remove
   " "     -> state { currentTope = prepareTope (switchBasicShape currentBasicShape tope) }
 
   _       -> state
   where
     n = squarePointer state
-    currentBasicShape = drop 27 basicShapes3D !! n
+    currentBasicShape = drop pointsAndEdgesCount basicShapes3D !! n
     (tope, _) = currentTope state
-
-updateWorld (PointerPress (x, y)) s = trace (T.pack (show x ++ " " ++ show y)) $ s
+    pointsAndEdgesCount = 27
+    facesAndVolumsCount = 23
+    columnCount = 6
+    rotationCoeff = pi/8
 updateWorld _ s = s
 
 applyRotationX :: Double -> [BasicShape3D] -> [BasicShape3D]
@@ -128,24 +129,22 @@ drawWorld (State (tope, topeComponents) rotation currentIndex) = translated (-10
   ]
   where
     rotatedBasicShapes3D = applyRotation rotation basicShapes3D
-    (pointsAndEdges, _facesAndVolumes) = splitAt 27 rotatedBasicShapes3D
+    (pointsAndEdges, _facesAndVolumes) = splitByDimension rotatedBasicShapes3D
 
 sidePanel :: Rotation -> Int -> Picture
 sidePanel rotation n = pictures
-  [ translated x (-y) (scaled 0.35 0.35 (render3Das2D shape <> background))
-    <> if i == n then selectionBox else blank
+  [ translated x (-y) (scaled 0.35 0.35 (render3Das2D shape <> background)
+    <> if i == n then selectionBox else blank)
   | (i, shape) <- zip [0..] facesAndVolumes
   , let column = i `mod` rowSize
   , let row    = i `div` rowSize
-  , let x = cellSize * fromIntegral column 
+  , let x = cellSize * fromIntegral column
   , let y = cellSize * fromIntegral row
-  -- FIXME: remove after debugging , row > 2
   ]
   where
-    -- FIXME: partition by dimension instead of splitAt 27
     selectionBox = colored red (rectangle cellSize cellSize)
     rotatedBasicShapes3D = applyRotation rotation basicShapes3D
-    (pointsAndEdges, facesAndVolumes) = splitAt 27 rotatedBasicShapes3D
+    (pointsAndEdges, facesAndVolumes) = splitByDimension rotatedBasicShapes3D
     background = background3D' pointsAndEdges
     rowSize = 6
     cellSize = 3

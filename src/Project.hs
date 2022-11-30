@@ -13,4 +13,4 @@ myPicture = example1
 
 run :: IO ()
 --run = drawingOf myPicture
-run = visualize "≤(t, s)"
+run = visualize "⊥"
