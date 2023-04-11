@@ -10,6 +10,7 @@ The project is tested on the following versions of the tools:
 * `Stack 2.9.*`
 * `GHC 8.8.*`
 * `Cabal 3.6.*`
+
 It is recommended to use [GHCUP](https://www.haskell.org/ghcup/) to have easier management of the Haskell toolchain.
 
 ### Installation
