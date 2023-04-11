@@ -54,11 +54,24 @@ Key bindings:
 ![Modified view](https://i.postimg.cc/g0c9pZdQ/image.png)
 
 ### Troubleshoting
-* Error `The program alex is required but not found` while building the project.
-    * Install `alex` and `happy` using `stack`.
-    ```bash
-    stack install alex happy
-    ```
-* 
+
+**Getting the error *The program alex is required but not found* while building the project.**
+    
+Install `alex` and `happy` using `stack`.
+```bash
+stack install alex happy
+```
+
+## Contributing
+Known issues:
+- Project breaks on Safari browser. (It is recommended to Firefox. Chrome is not tested.)
+- `BasicShape` with 4 points does not render properly on selection panels. Although the visualization is correct, they are not displayed on specific position.
+- It takes a lot of time removing faces from the visualization. This is probably a problem with theorem prover but optimization is possible from the visualization side too.
+
+Features needed:
+- Adding or removing edges and points.
+- Selecting faces using mouse instead of keyboard.
+- Adding intermediate points to the edges and visualizing them.
+
 ## References
 1. Emily Riehl and Michael Shulman. A type theory for synthetic ∞-categories. Higher Structures, 1, 2017. https://arxiv.org/abs/1705.07442
