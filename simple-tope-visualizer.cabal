@@ -4,14 +4,14 @@ cabal-version: 1.24
 --
 -- see: https://github.com/sol/hpack
 
-name:           haskell-codeworld-template
+name:           simple-tope-visualizer
 version:        0.1.0
-description:    Please see the README on GitHub at <https://github.com/fizruk/haskell-codeworld-template#readme>
-homepage:       https://github.com/fizruk/haskell-codeworld-template#readme
-bug-reports:    https://github.com/fizruk/haskell-codeworld-template/issues
-author:         Nikolai Kudasov
-maintainer:     nickolay.kudasov@gmail.com
-copyright:      2022 Nikolai Kudasov
+description:    Please see the README on GitHub at <https://github.com/pptx704/simple-tope-visualizer#readme>
+homepage:       https://github.com/pptx704/simple-tope-visualizer#readme
+bug-reports:    https://github.com/pptx704/simple-tope-visualizer/issues
+author:         Md Motasim Bhuiyan
+maintainer:     rafeedm.bhuiyan@gmail.com
+copyright:      2022 Md Motasim Bhuiyan
 license:        BSD3
 license-file:   LICENSE
 build-type:     Custom
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/fizruk/haskell-codeworld-template
+  location: https://github.com/pptx704/simple-tope-visualizer
 
 custom-setup
   setup-depends:
@@ -38,7 +38,7 @@ library
       TopeLayerData
       Visualize
   other-modules:
-      Paths_haskell_codeworld_template
+      Paths_simple_tope_visualizer
   hs-source-dirs:
       src
   ghc-options: -Wall -fno-warn-type-defaults
@@ -49,17 +49,17 @@ library
     , text
   default-language: Haskell2010
 
-executable haskell-codeworld-template
+executable simple-tope-visualizer
   main-is: Main.hs
   other-modules:
-      Paths_haskell_codeworld_template
+      Paths_simple_tope_visualizer
   hs-source-dirs:
       app
   ghc-options: -Wall -fno-warn-type-defaults -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , codeworld-api
-    , haskell-codeworld-template
+    , simple-tope-visualizer
     , simple-topes
     , text
   default-language: Haskell2010

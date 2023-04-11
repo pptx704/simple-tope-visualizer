@@ -2,7 +2,7 @@ resolver: lts-16.31
 
 packages:
 - .
-- simple-topes
+- simple-topes/simple-topes
 
 extra-deps:
 - codeworld-api-0.7.0@sha256:aff738c6d75acda276d47d0239569b210f76507445e41acc7be2dfdb901b8007,6234

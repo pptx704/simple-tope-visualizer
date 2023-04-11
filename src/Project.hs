@@ -8,9 +8,6 @@ import qualified RSTT.Syntax.Abs as RSTT
 import           SquareDrawings
 import           Visualize       (visualize)
 
-myPicture :: Picture
-myPicture = example1
-
 run :: IO ()
 --run = drawingOf myPicture
 run = visualize "⊥"

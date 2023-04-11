@@ -93,7 +93,7 @@ updateWorld (KeyPress key) state = case key of
 
   -- add basic shape
   " "     -> state { currentTope = prepareTope (switchBasicShape currentBasicShape tope) }
-
+  "Enter" -> state { currentTope = prepareTope "⊥", currentRotation = zeroRotation }
   _       -> state
   where
     n = squarePointer state
